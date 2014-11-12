@@ -42,8 +42,7 @@ app.controller('ServersController', function ($scope, $store, $ping) {
     function start(){
         var servers = $scope.servers;
         $scope.checkHandler = setInterval(function(){
-         	$scope.$apply();
-            getStatus(servers, servers.length-1);
+         	$scope.$apply(getStatus(servers, servers.length-1));
         }, $scope.checkInterval*1000);
     };
     
