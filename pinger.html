@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script>
+var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider']);
+
+app.controller('ServersController', function ($scope, $store, $ping) {
+    var storeKey = "pingServers";
+    $scope.servers = $store.get(storeKey) || [];
+    $scope.server = {};
+    $scope.checkInterval = 5;
+    
+    $scope.add = function(server){
+        console.log("server: "+server.url);
+        $scope.servers.push(angular.copy(server));
+        $scope.server = {};
+        serversChanged();
+    };
+    
+    $scope.delete = function(server){
+        console.log("remove server: "+server.url);
+        $scope.servers.splice(server, 1);
+        serversChanged();
+    };
+    
+    $scope.startCheck = function(){
+        start();
+    };
+    
+    $scope.isStarted = function(){
+        return !!$scope.checkHandler;
+    };
+    
+    $scope.stopCheck = function(){
+       if ($scope.isStarted()){
+            clearInterval($scope.checkHandler);
+            $scope.checkHandler = null;
+       }
+    };
+    
+    function start(){
+        var servers = $scope.servers;
+        $scope.checkHandler = setInterval(function(){
+         	$scope.$apply();
+            getStatus(servers, servers.length-1);
+        }, $scope.checkInterval*1000);
+    };
+    
+    function getStatus(servers, length){
+        var recurse = getStatus;
+        if(length >= 0){
+            var server = servers[length];
+            if (server){
+                $ping.ping(server.url, function(status, e){
+                    server.status = status;
+                    recurse(servers, length-1);
+                });
+            }
+        }
+    }
+    
+    function serversChanged(){
+       $store.set(storeKey, $scope.servers); 
+    }
+});
+
+
+
+var ls = angular.module('LocalStorage',[]);
+ls.factory("$store",function($parse){
+    var storage = window.localStorage;
+    return {
+        set: function(key, value) {
+            console.log("setting storage item:"+key);
+            var normalizedValue = JSON.stringify(value);
+            storage.setItem(key, normalizedValue);
+        },
+        
+        get: function(key){
+            console.log("getting storage item: " + key);
+            var value = storage.getItem(key);
+            console.log("key: " + key+" "+value);
+            return JSON.parse(value);
+        },
+    
+        remove: function(key){
+            console.log("remove storage item: "+ key);
+        }
+  }
+});
+
+var ls = angular.module('PingProvider',[]);
+ls.factory("$ping",function($parse, $q, $timeout){
+   function _ping(ip, callback) {
+    if (!this.inUse) {
+        this.status = 'unchecked';
+        this.inUse = true;
+        this.callback = callback;
+        this.ip = ip;
+        var _that = this;
+        this.img = new Image();
+        this.img.onload = function () {
+            _that.inUse = false;
+            _that.callback('responded');
+        };
+        this.img.onerror = function (e) {
+            if (_that.inUse) {
+                _that.inUse = false;
+                _that.callback('responded', e);
+            }
+
+        };
+        this.img.src = "http://" + ip;
+        this.timer = setTimeout(function () {
+            if (_that.inUse) {
+                _that.inUse = false;
+                _that.callback('timeout');
+            }
+        }, 1500);
+    }
+   }
+    return {
+        ping: _ping
+  }
+});
+</script>
+</head>
+<body>
+<div ng-app="ServerPing" ng-controller="ServersController"
+    <form name="form">
+	    <label for="interval">Check interval: </label><input id="interval" ng-model="checkInterval" type="text" required />
+	    <br/>
+	    <label> Type here full URL you want to monitor</label><br/>
+	    <label for="name">Name: </label><input id="name" ng-model="server.name" type="text" required /><br/>
+	    <label for="url">URL: http://</label><input id="url" ng-model="server.url" type="text" required /><br/>
+	    <p>
+	    	<button ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
+	    </p>
+   </form>
+   <div ng-repeat="server in servers track by $index" ><span>{{ server.status }}</span><span>[{{$index + 1}}] {{ server.name }} {{ server.url }}<span>
+     <button ng-click="delete(server)">Remove</button></div>
+    </p>
+    <button ng-disabled="isStarted()" ng-click="startCheck()">Start</button>
+    <button ng-disabled="!isStarted()" ng-click="stopCheck()">Stop</button>
+</div>
+</body>
+</html>
