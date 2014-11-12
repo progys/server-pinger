@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
 <script>
 var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider']);
 
@@ -72,26 +72,23 @@ ls.factory("$store",function($parse){
     var storage = window.localStorage;
     return {
         set: function(key, value) {
-            console.log("setting storage item:"+key);
             var normalizedValue = JSON.stringify(value);
             storage.setItem(key, normalizedValue);
         },
         
         get: function(key){
-            console.log("getting storage item: " + key);
             var value = storage.getItem(key);
-            console.log("key: " + key+" "+value);
             return JSON.parse(value);
         },
     
         remove: function(key){
-            console.log("remove storage item: "+ key);
+            storage.removeItem(key);
         }
   }
 });
 
 var ls = angular.module('PingProvider',[]);
-ls.factory("$ping",function($parse, $q, $timeout){
+ls.factory("$ping", function($parse, $q, $timeout){
    function _ping(ip, callback) {
     if (!this.inUse) {
         this.status = 'unchecked';
@@ -138,11 +135,13 @@ ls.factory("$ping",function($parse, $q, $timeout){
 	    	<button ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
 	    </p>
    </form>
-   <div ng-repeat="server in servers track by $index" ><span>{{ server.status }}</span><span>[{{$index + 1}}] {{ server.name }} {{ server.url }}<span>
-     <button ng-click="delete(server)">Remove</button></div>
-    </p>
-    <button ng-disabled="isStarted()" ng-click="startCheck()">Start</button>
-    <button ng-disabled="!isStarted()" ng-click="stopCheck()">Stop</button>
-</div>
+   <div ng-repeat="server in servers track by $index" >
+   		<span>{{ server.status }}</span>
+   		<span>[{{$index + 1}}] {{ server.name }} {{ server.url }}<span>
+     	<button ng-click="delete(server)">Remove</button></div>
+   		<br/>
+    	<button ng-disabled="isStarted()" ng-click="startCheck()">Start</button>
+    	<button ng-disabled="!isStarted()" ng-click="stopCheck()">Stop</button>
+	</div>
 </body>
 </html>
