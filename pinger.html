@@ -12,14 +12,12 @@ app.controller('ServersController', function ($scope, $store, $ping) {
     $scope.checkInterval = 5;
     
     $scope.add = function(server){
-        console.log("server: "+server.url);
         $scope.servers.push(angular.copy(server));
         $scope.server = {};
         serversChanged();
     };
     
     $scope.delete = function(server){
-        console.log("remove server: "+server.url);
         $scope.servers.splice(server, 1);
         serversChanged();
     };
@@ -42,8 +40,8 @@ app.controller('ServersController', function ($scope, $store, $ping) {
     function start(){
         var servers = $scope.servers;
         $scope.checkHandler = setInterval(function(){
-         	$scope.$apply(getStatus(servers, servers.length-1));
-        }, $scope.checkInterval*1000);
+            $scope.$apply(getStatus(servers, servers.length - 1));
+        }, $scope.checkInterval * 1000);
     };
     
     function getStatus(servers, length){
@@ -107,7 +105,7 @@ ls.factory("$ping", function($parse, $q, $timeout){
             }
 
         };
-        this.img.src = "http://" + ip;
+        this.img.src = ip;
         this.timer = setTimeout(function () {
             if (_that.inUse) {
                 _that.inUse = false;
@@ -123,20 +121,19 @@ ls.factory("$ping", function($parse, $q, $timeout){
 </script>
 </head>
 <body>
-<div ng-app="ServerPing" ng-controller="ServersController"
+<div ng-app="ServerPing" ng-controller="ServersController">
     <form name="form">
-	    <label for="interval">Check interval: </label><input id="interval" ng-model="checkInterval" type="text" required />
+	    <label for="interval">Check interval: </label><input id="interval" ng-model="checkInterval" type="number" required />
 	    <br/>
-	    <label> Type here full URL you want to monitor</label><br/>
-	    <label for="name">Name: </label><input id="name" ng-model="server.name" type="text" required /><br/>
-	    <label for="url">URL: http://</label><input id="url" ng-model="server.url" type="text" required /><br/>
+	    <label> Add servers you want to monitor and press start</label><br/>
+	    <label for="name">Name: </label><input ngMaxlength="100" id="name" ng-model="server.name" type="text" required /><br/>
+	    <label for="url">URL: </label><input id="url"  ng-model="server.url" type="url" required /><br/>
 	    <p>
 	    	<button ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
 	    </p>
    </form>
    <div ng-repeat="server in servers track by $index" >
-   		<span>{{ server.status }}</span>
-   		<span>[{{$index + 1}}] {{ server.name }} {{ server.url }}<span>
+   		<span>{{ $index + 1 }}.</span><span>{{ server.status }} {{ server.name }} {{ server.url }}<span>
      	<button ng-click="delete(server)">Remove</button></div>
    		<br/>
     	<button ng-disabled="isStarted()" ng-click="startCheck()">Start</button>
