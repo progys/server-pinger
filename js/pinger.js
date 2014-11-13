@@ -7,6 +7,7 @@ app.controller('ServersController', function ($scope, $store, $ping) {
     $scope.servers = $store.get(storeKey) || [];
     $scope.server = emptyServer;
     $scope.checkInterval = 5;
+    start();
     
     $scope.add = function(server){
         $scope.servers.push(angular.copy(server));
@@ -14,9 +15,13 @@ app.controller('ServersController', function ($scope, $store, $ping) {
         serversChanged();
     };
     
-    $scope.delete = function(server){
-        $scope.servers.splice(server, 1);
+    $scope.remove = function(index){
+        $scope.servers.splice(index, 1);
         serversChanged();
+    };
+
+    $scope.noServers = function(){
+        return !$scope.servers || $scope.servers.length === 0;
     };
     
     $scope.startCheck = function(){
@@ -46,7 +51,7 @@ app.controller('ServersController', function ($scope, $store, $ping) {
         if(length >= 0){
             var server = servers[length];
             if (server){
-                $ping.ping(server.url, function(status, e){
+                $ping.ping(server.url.replace("http", "ws"), function(status, e){
                     server.status = status;
                     recurse(servers, length-1);
                 });
@@ -83,34 +88,20 @@ ls.factory("$store",function($parse){
 
 var ls = angular.module('PingProvider',[]);
 ls.factory("$ping", function($parse, $q, $timeout){
-   function _ping(ip, callback) {
-    if (!this.inUse) {
-        this.status = 'unchecked';
-        this.inUse = true;
-        this.callback = callback;
-        this.ip = ip;
-        var _that = this;
-        this.img = new Image();
-        this.img.onload = function () {
-            _that.inUse = false;
-            _that.callback('responded');
-        };
-        this.img.onerror = function (e) {
-            if (_that.inUse) {
-                _that.inUse = false;
-                _that.callback('responded', e);
-            }
-
-        };
-        this.img.src = ip;
-        this.timer = setTimeout(function () {
-            if (_that.inUse) {
-                _that.inUse = false;
-                _that.callback('timeout');
-            }
-        }, 1500);
+   function _ping(url, callback) {
+      var ws = new WebSocket(url);
+      ws.onerror = function(e){
+        callback("ALIVE");
+        ws = null;
+      };
+     setTimeout(function() {
+        if(ws != null) {
+          ws.close();
+          ws = null;
+          callback("TIMEOUT");
+        }
+      },2000);
     }
-   }
     return {
         ping: _ping
   }

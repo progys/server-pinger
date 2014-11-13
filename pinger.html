@@ -5,66 +5,68 @@
 </head>
 <body>
 <div class="container" ng-app="ServerPing" ng-controller="ServersController">
-    <div class="panel panel-default">
+    <div class="panel panel-default ">
+            <div class="panel-heading">Servers status</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="interval">Check interval: </label>
+                    <input class="form-control" min="3" id="interval" ng-model="checkInterval" type="number" required />
+               </div>
+               <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>URL</th>
+                        <th>&nbsp;</th>    
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="server in servers track by $index">
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ server.status }}</td>
+                            <td>{{ server.name }}</td>
+                            <td>{{ server.url }}</td>
+                            <td><button class="btn btn-danger" ng-click="remove($index)">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+               </div>
+               <form role="form">
+                   <div class="form-group">
+                        <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
+                        <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
+                   </div>
+               </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
         <div class="panel-heading">Add servers you want to monitor</div>
         <div class="panel-body">
             <form name="form" role="form">
                 <div class="form-group">
-        	       <label for="name">Name: </label>
+                   <label for="name">Name: </label>
                    <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="server.name" type="text" required />
                 </div>
                 <div class="form-group">
-            	    <label  for="url">URL: </label>
+                    <label  for="url">URL: </label>
                     <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="server.url" type="url" required />
                 </div>
                 <div class="form-group">
-            	    <p>
-            	    	<button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
-            	    </p>
+                    <p>
+                        <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
+                    </p>
                 </div>
            </form>
        </div>
    </div>
-   <div class="panel panel-default ">
-        <div class="panel-heading">Servers status</div>
-        <div class="panel-body">
-           <div class="row">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Status</th>
-                    <th>Name</th>
-                    <th>URL</th>
-                    <th>&nbsp;</th>    
-                </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="server in servers track by $index">
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ server.status }}</td>
-                        <td>{{ server.name }}</td>
-                        <td>{{ server.url }}</td>
-                        <td><button class="btn btn-danger" ng-click="delete(server)">Remove</button></td>
-                    </tr>
-                </tbody>
-            </table>
-           </div>
-           <form role="form">
-               <div class="form-group">
-                    <label for="interval">Check interval: </label>
-                    <input class="form-control" id="interval" ng-model="checkInterval" type="number" required />
-               </div>
-               <div class="form-group">
-                    <button ng-disabled="isStarted()" ng-click="startCheck()" class="btn btn-primary">Start</button>
-                    <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
-               </div>
-           </form>
-        </div>
     </div>
-</div>
+   
 </body>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
     <script src="js/pinger.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 </html>
