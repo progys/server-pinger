@@ -1,9 +1,9 @@
 server-pinger
-=============
+===================
 
-Enter the address and monitor your server status.
+Enter the address and monitor your server health status.
+
+Usage is very simple - open the page and insert servers with their URL (HTTP and HTTPS supported). Once server are entered they are stored in local storage. 
 
 
-Program is still in the early draft version - I would not even call it beta :)
-
-Usage is very simple - open the page and insert servers with their URL. Once server are entered they are stored in local storage. You can then click start to start server checking.
+Server status checks will be performed by using client side Web Socket technology. However, your server does not need to support it.
