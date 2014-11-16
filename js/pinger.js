@@ -1,13 +1,17 @@
 var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider', 'xeditable']);
 app.run(function(editableOptions) {
-  editableOptions.theme = 'bs3';
+    editableOptions.theme = 'bs3';
 });
 
 app.controller('ServersController', function($scope, $store, $ping) {
     var storeKey = "pingServers";
     var emptyServer = {};
+    var messages = {
+        now: "now",
+        notChecked: "not checked"
+    }
     defaultCheckInterval = 5;
-    lastCheckedInterval = 1000;
+    lastCheckedInterval = 2000;
 
     $scope.servers = $store.get(storeKey) || [];
     $scope.emptyServer = initEmptyServer();
@@ -73,6 +77,7 @@ app.controller('ServersController', function($scope, $store, $ping) {
         return function(status, e) {
             server.status = status;
             server.checked = new Date();
+            server.lastChecked = messages.now;
             $scope.$apply();
         }
     }
@@ -94,6 +99,8 @@ app.controller('ServersController', function($scope, $store, $ping) {
         var servers = angular.copy($scope.servers);
         for (var i = 0; i < servers.length; i++) {
             delete servers[i].lastChecked;
+            delete servers[i].checked;
+            delete servers[i].status;
         }
         $store.set(storeKey, servers);
     }
@@ -114,7 +121,7 @@ app.controller('ServersController', function($scope, $store, $ping) {
             if (server.checked) {
                 server.lastChecked = moment(server.checked).fromNow();
             } else {
-                server.lastChecked = "Not Checked";
+                server.lastChecked = messages.notChecked;
             }
         }
     }
@@ -144,17 +151,22 @@ ls.factory("$store", function($parse) {
 
 var ls = angular.module('PingProvider', []);
 ls.factory("$ping", function($parse) {
+    var status = {
+        ALIVE: "ALIVE",
+        TIMEOUT: "TIMEOUT"
+    };
+
     function _ping(url, callback) {
         var ws = new WebSocket(url);
         ws.onerror = function(e) {
-            callback("ALIVE");
+            callback(status.ALIVE);
             ws = null;
         };
         setTimeout(function() {
             if (ws != null) {
                 ws.close();
                 ws = null;
-                callback("TIMEOUT");
+                callback(status.TIMEOUT);
             }
         }, 2000);
     }

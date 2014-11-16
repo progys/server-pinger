@@ -20,6 +20,8 @@
                 <div class="form-group">
                     <label for="interval">Check interval: </label>
                     <a href="#" editable-number="checkInterval" onaftersave="intervalChanged()" e-min="3">{{ checkInterval }}</a>
+                    <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
+                    <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
                </div>
                <div class="row">
                 <table class="table table-striped">
@@ -45,12 +47,6 @@
                     </tbody>
                 </table>
                </div>
-               <form role="form">
-                   <div class="form-group">
-                        <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
-                        <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
-                   </div>
-               </form>
             </div>
         </div>
         <div class="panel panel-default">
