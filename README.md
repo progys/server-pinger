@@ -15,5 +15,5 @@ Status checker will try to connect to server by using client side Web Socket tec
 
 Why I created it ?
 ------------------
-I created this page for my friend - he wanted to have very simple page to see if its servers are alive.
+I created this page for my friend. He wanted to have very simple page to check if his servers are alive.
 For me it was an opportunity to have some real hands-on experience with AngularJS.
