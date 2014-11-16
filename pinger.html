@@ -20,6 +20,7 @@
                         <th>Status</th>
                         <th>Name</th>
                         <th>URL</th>
+                        <th>Last Checked</th>  
                         <th>&nbsp;</th>    
                     </tr>
                     </thead>
@@ -29,6 +30,7 @@
                             <td>{{ server.status }}</td>
                             <td>{{ server.name }}</td>
                             <td>{{ server.url }}</td>
+                            <td>{{ server.lastChecked }}</td>
                             <td><button class="btn btn-danger" ng-click="remove($index)">Remove</button></td>
                         </tr>
                     </tbody>
@@ -48,15 +50,15 @@
             <form name="form" role="form">
                 <div class="form-group">
                    <label for="name">Name: </label>
-                   <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="server.name" type="text" required />
+                   <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="emptyServer.name" type="text" required />
                 </div>
                 <div class="form-group">
                     <label  for="url">URL: </label>
-                    <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="server.url" type="url" required />
+                    <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="emptyServer.url" type="url" required />
                 </div>
                 <div class="form-group">
                     <p>
-                        <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(server)">Add</button>
+                        <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(emptyServer)">Add</button>
                     </p>
                 </div>
            </form>
@@ -65,8 +67,9 @@
     </div>
    
 </body>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
-    <script src="js/pinger.js"></script>
-    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script type="application/javascript" src="js/pinger.js"></script>
+    <script type="application/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="application/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.min.js"></script>
 </html>

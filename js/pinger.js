@@ -7,13 +7,18 @@ app.controller('ServersController', function($scope, $store, $ping) {
     };
 
     $scope.servers = $store.get(storeKey) || [];
-    $scope.server = emptyServer;
+    $scope.emptyServer = initEmptyServer();
     $scope.checkInterval = 5;
+    lastCheckedInterval = 10 * 1000;
+
+    //immediately start check
     start();
 
     $scope.add = function(server) {
-        $scope.servers.push(angular.copy(server));
-        $scope.server = emptyServer;
+        $scope.servers.push(angular.copy(angular.extend(server, {
+            index: $scope.servers.length
+        })));
+        $scope.emptyServer = initEmptyServer();
         serversChanged();
     };
 
@@ -44,23 +49,47 @@ app.controller('ServersController', function($scope, $store, $ping) {
     function start() {
         var servers = $scope.servers;
         $scope.checkHandler = setInterval(function() {
-            $scope.$apply(getStatus(servers));
+            getStatus(servers);
         }, $scope.checkInterval * 1000);
     };
+
+    function statusCallback(server) {
+        return function(status, e) {
+            server.status = status;
+            server.checked = new Date();
+        }
+    }
 
     function getStatus(servers) {
         for (var i = 0; i < servers.length; i++) {
             var server = servers[i];
             if (server) {
-                $ping.ping(server.url.replace(/https|http/, "ws"), function(status, e) {
-                    server.status = status;
-                });
+                $scope.$apply($ping.ping(server.url.replace(/https|http/, "ws"), statusCallback(server)));
             }
         }
     }
 
     function serversChanged() {
         $store.set(storeKey, $scope.servers);
+    }
+
+    function initEmptyServer() {
+        $scope.emptyServer = angular.copy(emptyServer);
+    }
+
+    setInterval(function() {
+        $scope.$apply(lastChecked($scope.servers));
+    }, lastCheckedInterval);
+
+    function lastChecked(servers) {
+        for (var i = 0; i < servers.length; i++) {
+            var server = servers[i];
+            if (server.checked) {
+                server.lastChecked = moment(server.checked).fromNow();
+            } else {
+                server.lastChecked = "Not Checked";
+            }
+        }
     }
 });
 
