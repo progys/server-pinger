@@ -17,15 +17,21 @@
     <div class="panel panel-default ">
             <div class="panel-heading">Servers status</div>
             <div class="panel-body">
-                <div class="form-group">
-                    <label for="interval">Check interval: </label>
-                    <a href="#" editable-number="checkInterval" onaftersave="intervalChanged()" e-min="3">{{ checkInterval }}</a>
-                    <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
-                    <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="interval">Check interval: </label>
+                        <a href="#" editable-number="checkInterval" onaftersave="intervalChanged()" e-min="3">{{ checkInterval }}</a>
+                    </div>
+                    <div class="col-md-2">
+                        <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
+                        <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
+                    </div>
                 </div>
-                <div>
-                    <button ng-show="!addServersVisible" ng-click="toggleAddServerVisibility()" class="btn btn-default">Add Servers</button>
-                    <button ng-show="addServersVisible" ng-click="toggleAddServerVisibility()" class="pull-left btn btn-default">Hide</button>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button ng-show="!addServersVisible" ng-click="toggleAddServerVisibility()" class="btn btn-default">Add Servers</button>
+                        <button ng-show="addServersVisible" ng-click="toggleAddServerVisibility()" class="pull-left btn btn-default">Hide</button>
+                    </div>
                 </div>
                 <div class="panel panel-default" ng-show="addServersVisible">
                     <div class="panel-heading">Add servers you want to monitor</div>
@@ -51,12 +57,12 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>Number</th>
-                            <th>Status</th>
-                            <th>Name</th>
-                            <th>URL</th>
-                            <th>Last Checked</th>  
-                            <th>&nbsp;</th>    
+                            <th class="col-md-1">Number</th>
+                            <th class="col-md-1">Status</th>
+                            <th class="col-md-3">Name</th>
+                            <th class="col-md-3">URL</th>
+                            <th class="col-md-2">Last Checked</th>  
+                            <th class="col-md-2">&nbsp;</th>    
                         </tr>
                         </thead>
                         <tbody>
