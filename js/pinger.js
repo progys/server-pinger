@@ -2,17 +2,28 @@ var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider']);
 
 app.controller('ServersController', function($scope, $store, $ping) {
     var storeKey = "pingServers";
-    var emptyServer = {
-        status: "Not checked"
-    };
+    var emptyServer = {};
+    defaultCheckInterval = 5;
+    lastCheckedInterval = 1000;
 
     $scope.servers = $store.get(storeKey) || [];
     $scope.emptyServer = initEmptyServer();
-    $scope.checkInterval = 5;
-    lastCheckedInterval = 10 * 1000;
+    $scope.checkInterval = defaultCheckInterval;
 
-    //immediately start check
-    start();
+    init();
+
+    function init() {
+        //immediately start checking
+        start();
+        startLastChecked();
+    }
+
+    $scope.$watch("checkInterval", function() {
+        if ($scope.checkInterval >= defaultCheckInterval) {
+            $scope.stopCheck();
+            $scope.startCheck();
+        }
+    });
 
     $scope.add = function(server) {
         $scope.servers.push(angular.copy(angular.extend(server, {
@@ -57,6 +68,7 @@ app.controller('ServersController', function($scope, $store, $ping) {
         return function(status, e) {
             server.status = status;
             server.checked = new Date();
+            $scope.$apply();
         }
     }
 
@@ -64,22 +76,33 @@ app.controller('ServersController', function($scope, $store, $ping) {
         for (var i = 0; i < servers.length; i++) {
             var server = servers[i];
             if (server) {
-                $scope.$apply($ping.ping(server.url.replace(/https|http/, "ws"), statusCallback(server)));
+                $ping.ping(server.url.replace(/https|http/, "ws"), statusCallback(server));
             }
         }
     }
 
     function serversChanged() {
-        $store.set(storeKey, $scope.servers);
+        saveServers();
+    }
+
+    function saveServers() {
+        var servers = angular.copy($scope.servers);
+        for (var i = 0; i < servers.length; i++) {
+            delete servers[i].lastChecked;
+            delete servers[i].status;
+        }
+        $store.set(storeKey, servers);
     }
 
     function initEmptyServer() {
         $scope.emptyServer = angular.copy(emptyServer);
     }
 
-    setInterval(function() {
-        $scope.$apply(lastChecked($scope.servers));
-    }, lastCheckedInterval);
+    function startLastChecked() {
+        setInterval(function() {
+            $scope.$apply(lastChecked($scope.servers));
+        }, lastCheckedInterval);
+    }
 
     function lastChecked(servers) {
         for (var i = 0; i < servers.length; i++) {
