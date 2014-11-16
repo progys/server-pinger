@@ -1,4 +1,7 @@
-var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider']);
+var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider', 'xeditable']);
+app.run(function(editableOptions) {
+  editableOptions.theme = 'bs3';
+});
 
 app.controller('ServersController', function($scope, $store, $ping) {
     var storeKey = "pingServers";
@@ -18,12 +21,14 @@ app.controller('ServersController', function($scope, $store, $ping) {
         startLastChecked();
     }
 
-    $scope.$watch("checkInterval", function() {
-        if ($scope.checkInterval >= defaultCheckInterval) {
-            $scope.stopCheck();
-            $scope.startCheck();
-        }
-    });
+    $scope.intervalChanged = function() {
+        $scope.stopCheck();
+        $scope.startCheck();
+    };
+
+    $scope.serverNameChanged = function() {
+        serversChanged();
+    };
 
     $scope.add = function(server) {
         $scope.servers.push(angular.copy(angular.extend(server, {
@@ -89,7 +94,6 @@ app.controller('ServersController', function($scope, $store, $ping) {
         var servers = angular.copy($scope.servers);
         for (var i = 0; i < servers.length; i++) {
             delete servers[i].lastChecked;
-            delete servers[i].status;
         }
         $store.set(storeKey, servers);
     }
