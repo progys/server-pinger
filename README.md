@@ -7,7 +7,7 @@ Enter the address and monitor your server health status.
 
 How to use it?
 ----------------
-Usage is very simple - open the page and insert servers with their URL (HTTP and HTTPS supported). Entered servers are stored in browser local storage.
+Open the page and insert server URL and name. Servers are stored in browser local storage and their health status is reported periodically according to the checking interval (default 5 seconds). Checking interval can be changed.
 
 How it works?
 -----------------
