@@ -2,6 +2,14 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <style>
+        .ALIVE {
+            color: green;
+        }
+        .TIMEOUT {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div class="container" ng-app="ServerPing" ng-controller="ServersController">
@@ -27,7 +35,7 @@
                     <tbody>
                         <tr ng-repeat="server in servers track by $index">
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ server.status }}</td>
+                            <td ng-class="server.status">{{ server.status }}</td>
                             <td>{{ server.name }}</td>
                             <td>{{ server.url }}</td>
                             <td>{{ server.lastChecked }}</td>
