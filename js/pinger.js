@@ -16,6 +16,7 @@ app.controller('ServersController', function($scope, $store, $ping) {
     $scope.servers = $store.get(storeKey) || [];
     $scope.emptyServer = initEmptyServer();
     $scope.checkInterval = defaultCheckInterval;
+    $scope.addServersVisible = false;
 
     init();
 
@@ -24,6 +25,10 @@ app.controller('ServersController', function($scope, $store, $ping) {
         start();
         startLastChecked();
     }
+
+    $scope.toggleAddServerVisibility = function() {
+        $scope.addServersVisible = !$scope.addServersVisible;
+    };
 
     $scope.intervalChanged = function() {
         $scope.stopCheck();

@@ -22,53 +22,57 @@
                     <a href="#" editable-number="checkInterval" onaftersave="intervalChanged()" e-min="3">{{ checkInterval }}</a>
                     <button ng-disabled="isStarted() || noServers()" ng-click="startCheck()" class="btn btn-primary">Start</button>
                     <button ng-disabled="!isStarted()" ng-click="stopCheck()" class="btn btn-danger">Stop</button>
-               </div>
-               <div class="row">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Number</th>
-                        <th>Status</th>
-                        <th>Name</th>
-                        <th>URL</th>
-                        <th>Last Checked</th>  
-                        <th>&nbsp;</th>    
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="server in servers track by $index">
-                            <td>{{ $index + 1 }}</td>
-                            <td ng-class="server.status">{{ server.status }}</td>
-                            <td><a href="#" onaftersave="serverNameChanged()" editable-text="server.name">{{ server.name }}</a></td>
-                            <td>{{ server.url }}</td>
-                            <td>{{ server.lastChecked }}</td>
-                            <td><button class="btn btn-danger" ng-click="remove($index)">Remove</button></td>
+                </div>
+                <div>
+                    <button ng-show="!addServersVisible" ng-click="toggleAddServerVisibility()" class="btn btn-default">Add Servers</button>
+                    <button ng-show="addServersVisible" ng-click="toggleAddServerVisibility()" class="pull-left btn btn-default">Hide</button>
+                </div>
+                <div class="panel panel-default" ng-show="addServersVisible">
+                    <div class="panel-heading">Add servers you want to monitor</div>
+                    <div class="panel-body">
+                        <form name="form" role="form" class="form-inline">
+                            <div class="form-group">
+                               <label for="name">Name: </label>
+                               <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="emptyServer.name" type="text" required />
+                            </div>
+                            <div class="form-group">
+                                <label  for="url">URL: </label>
+                                <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="emptyServer.url" type="url" required />
+                            </div>
+                            <div class="form-group">
+                                <p>
+                                    <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(emptyServer)">Add</button>
+                                </p>
+                            </div>
+                       </form>
+                   </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Status</th>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th>Last Checked</th>  
+                            <th>&nbsp;</th>    
                         </tr>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="server in servers track by $index">
+                                <td>{{ $index + 1 }}</td>
+                                <td ng-class="server.status">{{ server.status }}</td>
+                                <td><a href="#" onaftersave="serverNameChanged()" editable-text="server.name">{{ server.name }}</a></td>
+                                <td>{{ server.url }}</td>
+                                <td>{{ server.lastChecked }}</td>
+                                <td><button class="btn btn-danger" ng-click="remove($index)">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
                </div>
             </div>
         </div>
-        <div class="panel panel-default">
-        <div class="panel-heading">Add servers you want to monitor</div>
-        <div class="panel-body">
-            <form name="form" role="form">
-                <div class="form-group">
-                   <label for="name">Name: </label>
-                   <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="emptyServer.name" type="text" required />
-                </div>
-                <div class="form-group">
-                    <label  for="url">URL: </label>
-                    <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="emptyServer.url" type="url" required />
-                </div>
-                <div class="form-group">
-                    <p>
-                        <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(emptyServer)">Add</button>
-                    </p>
-                </div>
-           </form>
-       </div>
-   </div>
     </div>
    
 </body>
