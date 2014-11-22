@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/xeditable.css" />
+    <link rel="stylesheet" type="text/css" href="css/angular-csp.css" />
     <style>
         .ALIVE {
             color: green;
@@ -10,10 +11,14 @@
         .TIMEOUT {
             color: red;
         }
+        .row {
+            margin-top: 7px;
+            margin-bottom: 7px;
+        }
     </style>
 </head>
 <body>
-<div class="container" ng-app="ServerPing" ng-controller="ServersController">
+<div class="container" ng-app="ServerPing" ng-controller="ServersController" ng-csp="">
     <div class="panel panel-default ">
             <div class="panel-heading">Servers status</div>
             <div class="panel-body">
@@ -29,29 +34,37 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2">
-                        <button ng-show="!addServersVisible" ng-click="toggleAddServerVisibility()" class="btn btn-default">Add Servers</button>
-                        <button ng-show="addServersVisible" ng-click="toggleAddServerVisibility()" class="pull-left btn btn-default">Hide</button>
+                        <label for="notification">Show notification: </label>
+                        <input type="checkbox"  ng-model="notificationsEnabled" />
                     </div>
                 </div>
-                <div class="panel panel-default" ng-show="addServersVisible">
-                    <div class="panel-heading">Add servers you want to monitor</div>
-                    <div class="panel-body">
-                        <form name="form" role="form" class="form-inline">
-                            <div class="form-group">
-                               <label for="name">Name: </label>
-                               <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="emptyServer.name" type="text" required />
-                            </div>
-                            <div class="form-group">
-                                <label  for="url">URL: </label>
-                                <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="emptyServer.url" type="url" required />
-                            </div>
-                            <div class="form-group">
-                                <p>
-                                    <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(emptyServer)">Add</button>
-                                </p>
-                            </div>
-                       </form>
-                   </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button ng-show="!addServersVisible" ng-click="toggleAddServerVisibility()" class="btn btn-default btn-block">Add Servers</button>
+                        <button ng-show="addServersVisible" ng-click="toggleAddServerVisibility()" class="pull-left btn btn-default btn-block">Hide</button>
+                    </div>
+                </div>
+                <div class="row col-md-8">
+                    <div class="panel panel-default" ng-show="addServersVisible">
+                        <div class="panel-heading">Add servers you want to monitor</div>
+                        <div class="panel-body">
+                            <form name="form" role="form" class="form-inline">
+                                <div class="form-group">
+                                   <label for="name">Name: </label>
+                                   <input class="form-control" placeholder="myServerName" ngMaxlength="100" id="name" ng-model="emptyServer.name" type="text" required />
+                                </div>
+                                <div class="form-group">
+                                    <label  for="url">URL: </label>
+                                    <input class="form-control" placeholder="http://myserver.com" id="url"  ng-model="emptyServer.url" type="url" required />
+                                </div>
+                                <div class="form-group">
+                                    <p>
+                                        <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="add(emptyServer)">Add</button>
+                                    </p>
+                                </div>
+                           </form>
+                       </div>
+                    </div>
                 </div>
                 <div class="row">
                     <table class="table table-striped">
@@ -82,10 +95,12 @@
     </div>
    
 </body>
-    <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script type="application/javascript" src="js/angular.min.js"></script>
     <script type="application/javascript" src="js/pinger.js"></script>
+    <script type="application/javascript" src="js/storage.js"></script>
+    <script type="application/javascript" src="js/pingProvider.js"></script>
     <script type="application/javascript" src="js/xeditable.min.js"></script>
-    <script type="application/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="application/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.min.js"></script>
+    <script type="application/javascript" src="js/jquery-2.1.1.min.js"></script>
+    <script type="application/javascript" src="js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="js/moment.min.js"></script>
 </html>

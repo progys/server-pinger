@@ -1,4 +1,4 @@
-var app = angular.module('ServerPing', ['LocalStorage', 'PingProvider', 'xeditable']);
+var app = angular.module('ServerPing', ['Storage', 'PingProvider', 'xeditable']);
 app.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
 });
@@ -13,15 +13,22 @@ app.controller('ServersController', function($scope, $store, $ping) {
     defaultCheckInterval = 5;
     lastCheckedInterval = 2000;
 
-    $scope.servers = $store.get(storeKey) || [];
     $scope.emptyServer = initEmptyServer();
     $scope.checkInterval = defaultCheckInterval;
     $scope.addServersVisible = false;
+    $scope.notificationsEnabled = true;
 
     init();
 
     function init() {
         //immediately start checking
+        $store.get(storeKey, function(servers) {
+            if (angular.isArray(servers)) {
+                $scope.servers = servers;
+            } else {
+                $scope.servers = [];
+            }
+        });
         start();
         startLastChecked();
     }
@@ -72,15 +79,18 @@ app.controller('ServersController', function($scope, $store, $ping) {
     };
 
     function start() {
-        var servers = $scope.servers;
         $scope.checkHandler = setInterval(function() {
-            getStatus(servers);
+            getStatus($scope.servers);
         }, $scope.checkInterval * 1000);
     };
 
     function statusCallback(server) {
         return function(status, e) {
+            var oldStatus = server.status;
             server.status = status;
+            if ($scope.notificationsEnabled && (oldStatus !== status || $ping.isTimeout(status))) {
+                showNotificationServerStatusChanged(server);
+            }
             server.checked = new Date();
             server.lastChecked = messages.now;
             $scope.$apply();
@@ -130,52 +140,14 @@ app.controller('ServersController', function($scope, $store, $ping) {
             }
         }
     }
-});
 
-
-
-var ls = angular.module('LocalStorage', []);
-ls.factory("$store", function($parse) {
-    var storage = window.localStorage;
-    return {
-        set: function(key, value) {
-            var normalizedValue = JSON.stringify(value);
-            storage.setItem(key, normalizedValue);
-        },
-
-        get: function(key) {
-            var value = storage.getItem(key);
-            return JSON.parse(value);
-        },
-
-        remove: function(key) {
-            storage.removeItem(key);
-        }
-    }
-});
-
-var ls = angular.module('PingProvider', []);
-ls.factory("$ping", function($parse) {
-    var status = {
-        ALIVE: "ALIVE",
-        TIMEOUT: "TIMEOUT"
-    };
-
-    function _ping(url, callback) {
-        var ws = new WebSocket(url);
-        ws.onerror = function(e) {
-            callback(status.ALIVE);
-            ws = null;
-        };
-        setTimeout(function() {
-            if (ws != null) {
-                ws.close();
-                ws = null;
-                callback(status.TIMEOUT);
-            }
-        }, 2000);
-    }
-    return {
-        ping: _ping
+    function showNotificationServerStatusChanged(server) {
+        chrome.notifications.clear(server.name, function() {});
+        chrome.notifications.create(server.name, {
+            title: "Server Pinger",
+            iconUrl: angular.lowercase(server.status) + ".png",
+            type: "basic",
+            message: "Server: " + server.name + "\nStatus: " + server.status + "\nURL: " + server.url
+        }, function() {});
     }
 });

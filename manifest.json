@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "Server pinger",
+  "description": "Monitors servers status. You will know once your server is down!",
+  "version": "1.0",
+  "author":"Mantas Aleknavicius <progys@gmail.com>",
+
+  "permissions": [
+    "notifications",
+    "storage"
+  ],
+   "app": {
+    "background": {
+      "scripts": ["js/main.js"]
+    }
+  },
+  "icons": {  "128": "pinger.png" }
+}
