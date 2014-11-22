@@ -5,6 +5,7 @@
   "description": "Monitors servers status. You will know once your server is down!",
   "version": "1.0",
   "author":"Mantas Aleknavicius <progys@gmail.com>",
+  "short_name": "Server pinger",
 
   "permissions": [
     "notifications",
