@@ -11,7 +11,6 @@ app.controller('ServersController', function($scope, $store, $ping) {
         notChecked: "not checked"
     }
     defaultCheckInterval = 5;
-    lastCheckedInterval = 2000;
 
     $scope.emptyServer = initEmptyServer();
     $scope.checkInterval = defaultCheckInterval;
@@ -28,9 +27,9 @@ app.controller('ServersController', function($scope, $store, $ping) {
             } else {
                 $scope.servers = [];
             }
+            $scope.$apply();
         });
         start();
-        startLastChecked();
     }
 
     $scope.toggleAddServerVisibility = function() {
@@ -92,7 +91,6 @@ app.controller('ServersController', function($scope, $store, $ping) {
                 showNotificationServerStatusChanged(server);
             }
             server.checked = new Date();
-            server.lastChecked = messages.now;
             $scope.$apply();
         }
     }
@@ -113,7 +111,6 @@ app.controller('ServersController', function($scope, $store, $ping) {
     function saveServers() {
         var servers = angular.copy($scope.servers);
         for (var i = 0; i < servers.length; i++) {
-            delete servers[i].lastChecked;
             delete servers[i].checked;
             delete servers[i].status;
         }
@@ -122,23 +119,6 @@ app.controller('ServersController', function($scope, $store, $ping) {
 
     function initEmptyServer() {
         $scope.emptyServer = angular.copy(emptyServer);
-    }
-
-    function startLastChecked() {
-        setInterval(function() {
-            $scope.$apply(lastChecked($scope.servers));
-        }, lastCheckedInterval);
-    }
-
-    function lastChecked(servers) {
-        for (var i = 0; i < servers.length; i++) {
-            var server = servers[i];
-            if (server.checked) {
-                server.lastChecked = moment(server.checked).fromNow();
-            } else {
-                server.lastChecked = messages.notChecked;
-            }
-        }
     }
 
     function showNotificationServerStatusChanged(server) {

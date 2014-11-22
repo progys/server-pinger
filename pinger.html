@@ -84,7 +84,7 @@
                                 <td ng-class="server.status">{{ server.status }}</td>
                                 <td><a href="#" onaftersave="serverNameChanged()" editable-text="server.name">{{ server.name }}</a></td>
                                 <td>{{ server.url }}</td>
-                                <td>{{ server.lastChecked }}</td>
+                                <td>{{ server.checked | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                                 <td><button class="btn btn-danger" ng-click="remove($index)">Remove</button></td>
                             </tr>
                         </tbody>
@@ -102,5 +102,4 @@
     <script type="application/javascript" src="js/xeditable.min.js"></script>
     <script type="application/javascript" src="js/jquery-2.1.1.min.js"></script>
     <script type="application/javascript" src="js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="js/moment.min.js"></script>
 </html>
