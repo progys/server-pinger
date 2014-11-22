@@ -20,8 +20,8 @@ For me it was an opportunity to have some real hands-on experience with AngularJ
 
 Technologies used
 ------------------
- AngularJS - all the app logic.
- Bootstrap - UI style.
- Angular-xeditable - inline editing functionality.
- WebSocket - pinging the server.
- Chrome App API - notifications and storage.
+ AngularJS - all the app logic.  
+ Bootstrap - UI style.  
+ Angular-xeditable - inline editing functionality.  
+ WebSocket - pinging the server.  
+ Chrome App API - notifications and storage.  
