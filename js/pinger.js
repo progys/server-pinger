@@ -145,7 +145,7 @@ app.controller('ServersController', function($scope, $store, $ping) {
         chrome.notifications.clear(server.name, function() {});
         chrome.notifications.create(server.name, {
             title: "Server Pinger",
-            iconUrl: angular.lowercase(server.status) + ".png",
+            iconUrl: "img/" + angular.lowercase(server.status) + ".png",
             type: "basic",
             message: "Server: " + server.name + "\nStatus: " + server.status + "\nURL: " + server.url
         }, function() {});

@@ -15,5 +15,5 @@
       "scripts": ["js/main.js"]
     }
   },
-  "icons": {  "128": "pinger.png" }
+  "icons": {  "128": "img/pinger.png" }
 }
