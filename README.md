@@ -23,6 +23,5 @@ Technologies used
  AngularJS - all the app logic.
  Bootstrap - UI style.
  Angular-xeditable - inline editing functionality.
- moment.js - calculating the last time status was checked.
  WebSocket - pinging the server.
  Chrome App API - notifications and storage.
